@@ -4,6 +4,11 @@
 echo "Enter a name for your bucket. It must end with -leaderboard: "
 read bucket_name
 
+if [[ ! "$BUCKET_NAME" == *-leaderboard ]]; then
+  echo "Error: bucket name must end with -leaderboard"
+  exit 1
+fi
+
 ######################################### BUILD #########################################
 
 # create s3 bucket using the name provided and make it an environment variable
