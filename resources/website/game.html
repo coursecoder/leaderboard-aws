@@ -1,44 +1,73 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="styles/leaderboard.css" />
-	<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300&family=Zen+Dots&display=swap"
-		rel="stylesheet">
-	<link rel="preconnect" href="https://fonts.gstatic.com">
 	<style>
-		canvas {
-			border: 1px solid #000000;
-			background-color: #464646;
+		* { box-sizing: border-box; margin: 0; padding: 0; }
+
+		body {
+			background-color: #0a0a0a;
+			font-family: 'Space Mono', monospace;
+			padding: 16px;
 		}
 
-		input {
+		canvas {
+			display: block;
+			border: 1px solid #2a2a2a;
+			border-radius: 4px;
+			background-color: #111;
+			margin-bottom: 16px;
+			width: 100%;
+			max-width: 780px;
+		}
 
-			line-height: 1.4;
-			color: rgb(0, 0, 0);
-			font-size: 14px;
-			font-weight: 400;
-			height: 15px;
-			font-size: 1.2rem;
-			margin-left: 9rem;
-			margin-top: 0.7rem;
-			padding: 1rem 2rem;
-			background-color: #464646;
-			border: #434343;
-			width: 225px;
+		.game-controls {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			flex-wrap: wrap;
+			max-width: 780px;
+		}
 
+		.score-input {
+			flex: 1;
+			min-width: 180px;
+			font-family: 'Space Mono', monospace;
+			font-size: 12px;
+			color: #f0f0f0;
+			background: #111;
+			border: 1px solid #2a2a2a;
+			border-radius: 4px;
+			padding: 11px 16px;
+			letter-spacing: 1px;
+			outline: none;
+			transition: border-color 0.2s ease;
+		}
+
+		.score-input::placeholder {
+			color: #444;
+		}
+
+		.score-input:focus {
+			border-color: #c8f000;
 		}
 	</style>
 </head>
-
-<body style="background-color:#343434" onload="startGame()">
-
-	<button class="button-32" role="button" onmousedown="accelerate(-0.2)"
-		onmouseup="accelerate(0.05)">ACCELERATE</button><br>
-	<button class="button-28" role="button" onmousedown="location. reload()">PLAY AGAIN</button>
-	<input placeholder="Enter your name here" id="gamer-name-input"></input>
-	<button class="button-92" role="button" id="submit-score-button"> SAVE SCORE </button>
+<body onload="startGame()">
+	<canvas id="gameCanvas"></canvas>
+	<div class="game-controls">
+		<button class="button-32" role="button"
+			onmousedown="accelerate(-0.2)"
+			onmouseup="accelerate(0.05)">ACCELERATE</button>
+		<button class="button-28" role="button"
+			onmousedown="location.reload()">PLAY AGAIN</button>
+		<input class="score-input" placeholder="Enter your name..." id="gamer-name-input" />
+		<button class="button-92" role="button" id="submit-score-button">SAVE SCORE</button>
+	</div>
 
 	<script>
 		var myGamePiece;
@@ -46,19 +75,18 @@
 		var myScore;
 
 		function startGame() {
-			myGamePiece = new component(30, 30, "white", 10, 120);
+			myGamePiece = new component(30, 30, "#c8f000", 10, 120);
 			myGamePiece.gravity = 0.05;
-			myScore = new component("30px", "Consolas", "black", 280, 40, "text");
+			myScore = new component("14px", "Space Mono", "#888888", 16, 28, "text");
 			myGameArea.start();
 		}
 
 		var myGameArea = {
-			canvas: document.createElement("canvas"),
+			canvas: document.getElementById("gameCanvas"),
 			start: function () {
 				this.canvas.width = 780;
 				this.canvas.height = 360;
 				this.context = this.canvas.getContext("2d");
-				document.body.insertBefore(this.canvas, document.body.childNodes[0]);
 				this.frameNo = 0;
 				this.interval = setInterval(updateGameArea, 20);
 			},
@@ -136,8 +164,8 @@
 				minGap = 50;
 				maxGap = 200;
 				gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
-				myObstacles.push(new component(10, height, "green", x, 0));
-				myObstacles.push(new component(10, x - height - gap, "green", x, height + gap));
+				myObstacles.push(new component(10, height, "#00f0a0", x, 0));
+				myObstacles.push(new component(10, x - height - gap, "#00f0a0", x, height + gap));
 			}
 			for (i = 0; i < myObstacles.length; i += 1) {
 				myObstacles[i].x += -1;
@@ -158,38 +186,28 @@
 			myGamePiece.gravity = n;
 		}
 
-		//PROJECT CODE
+		// Submit score to API
 		const button = document.getElementById('submit-score-button');
-
 		button.addEventListener('click', async _ => {
 			try {
 				gamerData = {
-					//get the name and score
 					gamer_name: document.getElementById('gamer-name-input').value,
 					gamer_score: myGameArea.frameNo
 				}
-				// console.log('Score Input Value: ' + document.getElementById('gamer-name-input').value)
-				console.log('Gamer Data: ' + JSON.stringify(gamerData))
-				// API_GATEWAY_ENDPOINT_URL_FOR_POSTING_SCORE
+				console.log('Gamer Data: ' + JSON.stringify(gamerData));
 				const response = await fetch(window.LEADERBOARD_CONFIG.API_GW_BASE_URL_STR + "/score/submit", {
 					method: 'POST',
 					mode: 'no-cors',
-					headers: {
-						'Content-Type': 'application/json',
-					},
+					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify(gamerData)
 				});
 				console.log('Successfully added score to leaderboard!', response);
 			} catch (err) {
 				console.error(`Error: ${err}`);
 			}
-			// clear input field
 			document.getElementById('gamer-name-input').value = '';
 		});
-
 	</script>
 	<script src="config.js"></script>
-	<br>
 </body>
-
 </html>
