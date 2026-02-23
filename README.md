@@ -12,7 +12,7 @@ The purpose of this work is to develop and deploy a leaderboard for your game us
 - **resources Folder:** This folder contains the initial setup script, teardown script, and the infrastructure for the frontend.
     - **website Folder:** This folder contains all the images and code necessary to build a functional game with leaderboard. Click the image below to see a live demo of what will be created.
 
-[![Click to see live example](https://github.com/coursecoder/leaderboard-aws/blob/media/Playdough-View-MVP.png)](https://leaderboard-aws.s3.amazonaws.com/index.html)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-brightgreen?style=for-the-badge)](https://leaderboard-aws.s3.amazonaws.com/index.html)
 
 ## Requirements
 - **AWS CLI:** See the [Getting started guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html) in the *AWS CLI User Guide* for more information.
