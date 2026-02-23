@@ -19,6 +19,11 @@ The purpose of this work is to develop and deploy a leaderboard for your game us
 - **AWS Credentials:** Your AWS credentials need to have administrative privileges to IAM, S3, Lambda, API Gateway and DynamoDB. If you haven't setup AWS credentials before, [this resource from AWS](https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/setup-credentials.html) is helpful.
 - **AWS SDK for Python:** You will need to be running the latest Boto3 release. See the [Boto3 Quickstart](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html) for more information.
 
+Install all Python dependencies with:
+```
+pip install -r requirements.txt
+```
+
 ## Installation Instructions
 
 ### Step 1: Clone the repo
